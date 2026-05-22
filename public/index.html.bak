@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEO8电竞 - 和平精英专属点单</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neo: {
+                            main: '#00D4FF',
+                            dark: '#0F172A',
+                            card: '#1E293B',
+                            warn: '#FF4D4F'
+                        }
+                    },
+                    fontFamily: {
+                        game: ["Microsoft YaHei", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .bg-neo-gradient {
+                background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            }
+            .btn-neo {
+                background: linear-gradient(90deg, #00D4FF, #0088CC);
+            }
+            .btn-neo:hover {
+                background: linear-gradient(90deg, #00B8E6, #0077BB);
+            }
+        }
+    </style>
+</head>
+<body class="bg-neo-gradient min-h-screen font-game text-white">
+    <header class="py-4 px-6 border-b border-neo-main/20 sticky top-0 bg-neo-dark/90 backdrop-blur z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-neo-main flex items-center">
+                <i class="fa fa-gamepad mr-2"></i>NEO8电竞
+            </h1>
+            <div class="flex gap-2">
+                <span class="text-sm bg-neo-warn/20 text-neo-warn px-3 py-1 rounded-full">新店开业·特惠护航</span>
+                <button onclick="resetOrderLimits()" class="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded">重置限制</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <div class="text-center mb-10">
+            <button onclick="showAllSpec()" class="px-6 py-3 rounded-lg btn-neo font-bold text-base">
+                <i class="fa fa-list-alt mr-2"></i>查看全部点单规格
+            </button>
+        </div>
+
+        <section id="orderTypeSelect" class="mb-12">
+            <h2 class="text-xl md:text-2xl text-center mb-8">选择护航类型</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div onclick="selectOrderType('metro')" class="bg-neo-card p-8 rounded-xl text-center cursor-pointer card-hover border border-transparent hover:border-neo-main/50">
+                    <i class="fa fa-subway text-5xl text-neo-main mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">地铁逃生单</h3>
+                    <p class="text-gray-400">保底爆仓、红枪福利、翻车赔付</p>
+                </div>
+                <div onclick="selectOrderType('super')" class="bg-neo-card p-8 rounded-xl text-center cursor-pointer card-hover border border-transparent hover:border-neo-main/50">
+                    <i class="fa fa-rocket text-5xl text-neo-main mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">超体对抗单</h3>
+                    <p class="text-gray-400">保底排名、稳进决赛圈</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="metroOrder" class="hidden mb-12">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-xl md:text-2xl">地铁逃生 · 专属点单（私信点单）</h2>
+                <button onclick="backToOrderType()" class="text-gray-400 hover:text-neo-main"><i class="fa fa-arrow-left mr-1"></i>返回</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-neo-card p-6 rounded-xl card-hover border border-neo-main/20">
+                    <h3 class="text-lg font-bold text-neo-main mb-3">4.9元单</h3>
+                    <ul class="text-gray-300 space-y-2 mb-4">
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>保底500万物资</li>
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>全程护航不翻车</li>
+                    </ul>
+                    <button onclick="submitOrder('地铁单-4.9元保底500万')" class="w-full py-2 rounded-lg btn-neo font-bold">立即下单</button>
+                </div>
+                <div class="bg-neo-card p-6 rounded-xl card-hover border border-neo-main/20">
+                    <h3 class="text-lg font-bold text-neo-main mb-3">7.8元单</h3>
+                    <ul class="text-gray-300 space-y-2 mb-4">
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>保底1000万物资</li>
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>高级物资优先</li>
+                    </ul>
+                    <button onclick="submitOrder('地铁单-7.8元保底1000万')" class="w-full py-2 rounded-lg btn-neo font-bold">立即下单</button>
+                </div>
+                <div class="bg-neo-card p-6 rounded-xl card-hover border border-neo-main/20">
+                    <h3 class="text-lg font-bold text-neo-main mb-3">9.1元单</h3>
+                    <ul class="text-gray-300 space-y-2 mb-4">
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>保底1300万物资</li>
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>高爆率红枪</li>
+                    </ul>
+                    <button onclick="submitOrder('地铁单-9.1元保底1300万')" class="w-full py-2 rounded-lg btn-neo font-bold">立即下单</button>
+                </div>
+                <div class="bg-neo-card p-6 rounded-xl card-hover border border-neo-warn/40 md:col-span-2 lg:col-span-3">
+                    <h3 class="text-lg font-bold text-neo-warn mb-3">5.78元翻车赔付单</h3>
+                    <ul class="text-gray-300 space-y-2 mb-4">
+                        <li><i class="fa fa-gift text-neo-warn mr-1"></i>连续翻车3把 → 赠送1把红AUG + 再保底300万</li>
+                        <li><i class="fa fa-lightbulb-o text-neo-main mr-1"></i>后续上新：战备凑六头六甲+七包+一把红枪</li>
+                        <li><i class="fa fa-comment text-gray-400 mr-1"></i>所有订单均为【私信点单】，下单后联系客服对接</li>
+                    </ul>
+                    <button onclick="submitOrder('地铁单-5.78元翻车赔付单')" class="w-full py-2 rounded-lg bg-neo-warn hover:bg-red-600 font-bold">立即下单</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="superOrder" class="hidden mb-12">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-xl md:text-2xl">超体对抗 · 专属点单（私信点单）</h2>
+                <button onclick="backToOrderType()" class="text-gray-400 hover:text-neo-main"><i class="fa fa-arrow-left mr-1"></i>返回</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-neo-card p-6 rounded-xl card-hover border border-neo-main/20">
+                    <h3 class="text-lg font-bold text-neo-main mb-3">3.91元单</h3>
+                    <ul class="text-gray-300 space-y-2 mb-4">
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>保底进前30名</li>
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>全程护航不落地成盒</li>
+                    </ul>
+                    <button onclick="submitOrder('超体单-3.91元保底前30')" class="w-full py-2 rounded-lg btn-neo font-bold">立即下单</button>
+                </div>
+                <div class="bg-neo-card p-6 rounded-xl card-hover border border-neo-main/20">
+                    <h3 class="text-lg font-bold text-neo-main mb-3">7.81元单</h3>
+                    <ul class="text-gray-300 space-y-2 mb-4">
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>保底进前10名</li>
+                        <li><i class="fa fa-check text-green-400 mr-1"></i>稳进决赛圈，高胜率吃鸡</li>
+                    </ul>
+                    <button onclick="submitOrder('超体单-7.81元保底前10')" class="w-full py-2 rounded-lg btn-neo font-bold">立即下单</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第一个弹窗：付款填写ID弹窗 -->
+        <div id="orderModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 p-4">
+            <div class="bg-neo-card w-full max-w-md rounded-xl p-6 border border-neo-main/30">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-neo-main">订单确认</h3>
+                    <button onclick="closeOrderModal()" class="text-gray-400 hover:text-white"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="mb-4 space-y-4">
+                    <p class="text-gray-300 mb-2">订单类型：<span id="orderTypeText" class="text-white font-bold"></span></p>
+                    <div>
+                        <label class="text-gray-300 block mb-2">输入你的游戏昵称/ID（必填）</label>
+                        <input type="text" id="buyerName" placeholder="请输入游戏ID，方便客服核对" class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-neo-main/30 focus:outline-none focus:border-neo-main text-white">
+                    </div>
+                    <div class="bg-yellow-500/20 p-3 rounded-lg text-yellow-300 text-sm">
+                        <i class="fa fa-exclamation-circle mr-1"></i>【重要提醒】支付时请<strong>务必同时备注：NEO8电竞网站来源 + 你的游戏ID</strong>，否则无法对接订单！
+                    </div>
+                    <div class="text-center mb-5">
+                        <p class="text-white font-bold mb-2">微信扫码支付</p>
+                        <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAET4e5p-Ke3A4nYh7rvj-Gid_GWD9O3tAAC_iMAAlOMyFdz_0ni_AgXmjsE.jpg" 
+                             alt="微信收款码" 
+                             class="w-48 h-48 rounded-lg mx-auto border-2 border-neo-main">
+                    </div>
+                    <p class="text-gray-400 text-sm">✅ 所有订单均为私信点单<br>✅ 下单后联系客服对接<br>✅ 新店开业福利，赔付保障拉满</p>
+                </div>
+                <button onclick="confirmOrder()" class="w-full py-3 rounded-lg btn-neo font-bold text-lg">确认提交订单</button>
+            </div>
+        </div>
+
+        <!-- 第二个弹窗：联系负责人微信弹窗 -->
+        <div id="wechatModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 p-4">
+            <div class="bg-neo-card w-full max-w-md rounded-xl p-6 border border-neo-main/30 text-center">
+                <h3 class="text-xl font-bold text-neo-main mb-4">联系总负责人</h3>
+                <p class="text-gray-200 mb-5 leading-relaxed">请联系总负责人加微信进行派单<br>打手接单后将会有客服与您联系</p>
+                <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEULkJqCctll_OEKlroojooVuGcEJrk6wACVh4AAkb1UVTJjI5uCaWz9DsE.jpg" 
+                     alt="负责人微信" 
+                     class="w-52 h-52 mx-auto rounded-lg border-2 border-neo-main mb-4">
+                <button onclick="closeWechatModal()" class="w-full py-3 rounded-lg btn-neo font-bold text-lg">我已了解</button>
+            </div>
+        </div>
+
+        <!-- 规格弹窗 -->
+        <div id="specModal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 p-4">
+            <div class="bg-neo-card w-full max-w-md rounded-xl p-6 border border-neo-main/30">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-neo-main">全部点单规格</h3>
+                    <button onclick="closeSpecModal()" class="text-gray-400 hover:text-white"><i class="fa fa-times"></i></button>
+                </div>
+                <div class="text-gray-200 text-sm leading-relaxed whitespace-pre-line">
+私信点单
+新店开业，地铁单：4.9保底500万。
+7.8保底1000万，9.1保底1300万。
+翻车单连续翻车三把送一把红aug并再保底300万5.78元。（后续还会上架更有趣的单，可以提提建议，战备凑六头六甲+七包一把红枪）
+超体单：3.91保底进前30
+7.81保底进前10
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-6 text-center text-gray-500 text-sm border-t border-neo-main/10 mt-12">
+        <p>NEO8电竞 © 2025 和平精英专属护航 | 私信点单 全程保障</p>
+    </footer>
+
+    <script>
+        let currentOrderTitle = "";
+        const LIMIT_TIME = 300000; // 5分钟冷却
+        let isSubmitting = false;
+
+        function getStorageKey(orderName){
+            return "order_limit_" + orderName;
+        }
+
+        function checkOrderLimit(orderName){
+            let lastTime = localStorage.getItem(getStorageKey(orderName));
+            if(!lastTime) return true;
+            let now = Date.now();
+            if(now - parseInt(lastTime) < LIMIT_TIME){
+                alert("该套餐暂时不可重复下单，请5分钟后再试！");
+                return false;
+            }
+            return true;
+        }
+
+        function setOrderLimit(orderName){
+            localStorage.setItem(getStorageKey(orderName), Date.now().toString());
+        }
+
+        function resetOrderLimits(){
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith("order_limit_")) {
+                    localStorage.removeItem(key);
+                }
+            }
+            alert("所有套餐下单冷却已重置，可以重新下单！");
+        }
+
+        function selectOrderType(type) {
+            document.getElementById('orderTypeSelect').classList.add('hidden');
+            if(type === 'metro') {
+                document.getElementById('metroOrder').classList.remove('hidden');
+            } else {
+                document.getElementById('superOrder').classList.remove('hidden');
+            }
+        }
+        function backToOrderType() {
+            document.getElementById('metroOrder').classList.add('hidden');
+            document.getElementById('superOrder').classList.add('hidden');
+            document.getElementById('orderTypeSelect').classList.remove('hidden');
+        }
+
+        function submitOrder(text) {
+            if(!checkOrderLimit(text)) return;
+            currentOrderTitle = text;
+            document.getElementById('orderTypeText').innerText = text;
+            document.getElementById('orderModal').classList.remove('hidden');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+        }
+        function closeWechatModal() {
+            document.getElementById('wechatModal').classList.add('hidden');
+            document.getElementById('buyerName').value = "";
+        }
+
+        async function confirmOrder() {
+            if (isSubmitting) {
+                alert("邮件正在发送中，可能会有些卡顿，请耐心等待，摁键不可重复点击");
+                return;
+            }
+
+            const buyerName = document.getElementById('buyerName').value.trim();
+            if(!buyerName) {
+                alert("请输入你的游戏昵称/ID！");
+                return;
+            }
+
+            isSubmitting = true;
+            setOrderLimit(currentOrderTitle);
+            // 关闭第一个付款弹窗
+            closeOrderModal();
+            // 弹出第二个微信联系弹窗
+            document.getElementById('wechatModal').classList.remove('hidden');
+            isSubmitting = false;
+        }
+
+        function showAllSpec() {
+            document.getElementById('specModal').classList.remove('hidden');
+        }
+        function closeSpecModal() {
+            document.getElementById('specModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
